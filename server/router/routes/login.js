@@ -59,8 +59,6 @@ login.route("/").post(async (req, res) => {
         const addTokenParams = [authToken.token, result.data[0].id, authToken.expiration]
         await utils.queryPG(addTokenString, addTokenParams, req.baseUrl);
 
-        userData = await utils.getStripeSubscription(userData)
-
         res
           .cookie('authToken', authToken.token, {
             secure: true,

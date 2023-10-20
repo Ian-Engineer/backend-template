@@ -66,7 +66,7 @@ cookieLogin.route("/").get(async (req, res, next) => {
     });
     if (validSession) {
       // query users table for the user's id
-      const userQueryString = "SELECT id, email, created_at, firstName, lastName, password, autoPlay FROM users WHERE id = $1 AND email = $2"
+      const userQueryString = "SELECT id, email, created_at, first_name, last_name, password FROM users WHERE id = $1 AND email = $2"
       const userQueryParams = [decodedToken.id, decodedToken.email]
       await utils
         .queryPG(userQueryString, userQueryParams, req.baseUrl)
@@ -97,7 +97,6 @@ cookieLogin.route("/").get(async (req, res, next) => {
               .queryPG(updateSessionString,updateSessionParams, req.baseUrl)
             // return the user's data, but remove the password first
             let { password, ...userData} = result.data[0]
-            userData = await utils.getStripeSubscription(userData)
 
             res
               .status(status)

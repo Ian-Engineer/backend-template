@@ -22,7 +22,7 @@ signup.route("/").post(async (req, res) => {
   //check if user already exists in the database
   const emailInUse = await utils
     .queryPG(
-      "SELECT id, email, created_at, autoPlay FROM users WHERE email = $1",
+      "SELECT id, email, created_at FROM users WHERE email = $1",
       [body.email],
       req.baseUrl
     )
@@ -50,12 +50,11 @@ signup.route("/").post(async (req, res) => {
     Number(process.env.BCRYPT_SALT)
   );
 
-  const queryString = `INSERT INTO users (email, created_at, password, autoPlay) VALUES($1, $2, $3, $4) RETURNING id, email, created_at, autoPlay`;
+  const queryString = `INSERT INTO users (email, created_at, password) VALUES($1, $2, $3) RETURNING id, email, created_at`;
   const queryParams = [
     body.email.toLowerCase(),
     new Date().toISOString(),
-    body.password,
-    true
+    body.password
   ];
   let status;
   await utils
